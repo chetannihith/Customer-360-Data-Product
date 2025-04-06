@@ -9,7 +9,7 @@
 
 **Customer 360 Data Product Designer** is an innovative multi-agent AI system designed to automate the creation of Customer 360 data products for retail banking customers. Built as part of the Accenture hackathon, this solution addresses **Problem Statement 6** by streamlining the process of understanding business use cases, designing data product structures, identifying source systems, generating attribute mappings, and certifying the final product—all with efficiency and accuracy.
 
-Our system leverages local AI execution with **Ollama** and the **Phi-3 Mini** model, uses **YAML** for structured outputs to avoid JSON parsing issues, and incorporates **SQLite** for long-term memory to enhance performance over time.
+Our system leverages local AI execution with **Ollama** and the **Phi-3 Mini** model, uses **YAML** for structured outputs to avoid JSON parsing issues, and incorporates **SQLite** for long-term memory to enhance performance over time. For the hackathon demo, we’ve deployed the Streamlit app on Streamlit Community Cloud, using **ngrok** to expose the local Ollama instance.
 
 ---
 
@@ -37,7 +37,7 @@ Our system leverages local AI execution with **Ollama** and the **Phi-3 Mini** m
 - **Local AI Execution**: Uses Ollama with Phi-3 Mini for fast, private processing.  
 - **YAML-Based Outputs**: Ensures consistent, error-free data representation.  
 - **Memory System**: SQLite database stores past use cases for reuse and learning.  
-- **Interactive UI**: Streamlit app provides a user-friendly interface.
+- **Interactive UI**: Streamlit app provides a user-friendly interface, deployed on Streamlit Community Cloud with ngrok for remote access to local Ollama.
 
 ---
 
@@ -50,15 +50,20 @@ Our system leverages local AI execution with **Ollama** and the **Phi-3 Mini** m
 | **Web Framework**     | Streamlit        | Interactive UI for demo             |
 | **Data Format**       | YAML             | Structured output representation    |
 | **Database**          | SQLite           | Long-term memory for use cases      |
+| **Exposure Tool**     | ngrok            | Exposes local Ollama to the internet|
+| **Containerization**  | Docker           | Used locally for running Ollama     |
 
 ---
 
-## Installation
+## Hackathon Deployment
+
+For the hackathon demo, we’ve deployed the Streamlit app on Streamlit Community Cloud, with Ollama running locally and exposed via ngrok. This allows the cloud-deployed app to access the local Ollama instance securely.
 
 ### Prerequisites
 - **Python 3.8+**
-- **Ollama**: Installed and running locally
-- **System Requirements**: 8GB RAM (16GB recommended), 10GB free storage
+- **Docker**: For running Ollama locally (optional, if not using direct installation)
+- **ngrok**: To expose local Ollama to the internet
+- **GitHub Account**: For deploying the Streamlit app from your repository
 
 ### Steps
 1. **Clone the Repository**:
@@ -69,27 +74,58 @@ Our system leverages local AI execution with **Ollama** and the **Phi-3 Mini** m
 
 2. **Install Dependencies**:
    ```bash
-   pip install streamlit ollama pyyaml
+   pip install streamlit requests pyyaml
    ```
 
-3. **Set Up Ollama**:
+3. **Set Up Ollama Locally**:
+   - Option 1: Run Ollama directly:
+     ```bash
+     ollama pull phi3:mini
+     ollama serve
+     ```
+   - Option 2: Use Docker (if you’ve pushed your image to Docker Hub):
+     ```bash
+     docker run -d -p 11434:11434 yourusername/yourimage:tag
+     ```
+
+4. **Expose Ollama with ngrok**:
+   - Download and install ngrok from [ngrok.com](https://ngrok.com).
+   - Run:
+     ```bash
+     ngrok http 11434
+     ```
+   - Copy the ngrok URL (e.g., `https://abc123.ngrok.io`).
+
+5. **Update the Streamlit App**:
+   - In `app.py`, set `OLLAMA_URL` to your ngrok URL:
+     ```python
+     OLLAMA_URL = "https://abc123.ngrok.io/api/chat"
+     ```
+
+6. **Push to GitHub**:
    ```bash
-   ollama pull phi3:mini
+   git add .
+   git commit -m "Configured for ngrok and Streamlit Cloud"
+   git push origin main
    ```
 
-4. **Run the Application**:
-   ```bash
-   streamlit run app.py
-   ```
+7. **Deploy to Streamlit Community Cloud**:
+   - Sign in to [streamlit.io/cloud](https://streamlit.io/cloud).
+   - Create a new app from your GitHub repository (`chetannihith/customer360-data-product-designer`).
+   - Set `app.py` as the entry point and deploy.
+
+8. **Run the Demo**:
+   - Keep Ollama and ngrok running locally.
+   - Share the Streamlit Cloud URL with the judges.
 
 ---
 
 ## Usage
 
-1. **Launch the App**: Open your browser at `http://localhost:8501` after running the command above.
+1. **Access the App**: Visit the Streamlit Cloud URL (e.g., `https://your-app-name.streamlit.app`).
 2. **Enter a Use Case**: Input a business use case (e.g., "Integrate customer demographics and transaction history to identify high-value customers").
 3. **Generate Design**: Click "Generate Data Product Design" to see the system process the use case step-by-step.
-4. **Export Results**: Download the YAML output for further use.
+4. **View Results**: The app will display requirements, data product structure, source systems, attribute mappings, and certification details.
 
 ### Sample Use Case
 **Input**:  
@@ -137,6 +173,7 @@ customer360-data-product-designer/
 │   ├── mapping_generator.py # Generates attribute mappings
 │   └── certification_agent.py # Certifies the data product
 ├── customer360_memory.db   # SQLite database for memory
+├── requirements.txt        # Python dependencies
 └── README.md               # Project documentation
 ```
 
@@ -146,14 +183,14 @@ customer360-data-product-designer/
 
 This project was developed for **Accenture's "Hack the Future: A Gen AI Sprint Powered by Data"** during Data and AI Week 2025. It aligns with Accenture’s emphasis on innovative AI solutions, leveraging their recommended tools (Ollama) and delivering a practical, scalable solution for retail banking.
 
-**Team**: BMLians 
+**Team**: BMLians  
 **Idea Title**: "Agentic Customer 360: AI-Powered Data Product Design for Retail Banking"
 
 ---
 
 ## Why We Stand Out
 
-- **Efficiency**: Local execution with Ollama and lightweight YAML outputs reduce latency.  
+- **Efficiency**: Local Ollama execution with ngrok ensures fast, private processing while enabling cloud deployment.  
 - **Accuracy**: Phi-3 Mini’s reasoning capabilities and memory system ensure precise designs.  
 - **Innovation**: YAML-based approach avoids JSON parsing errors, enhancing reliability.  
 - **Impact**: Automates a critical banking process, saving time and enabling personalization.
@@ -164,7 +201,8 @@ This project was developed for **Accenture's "Hack the Future: A Gen AI Sprint P
 
 - **Accenture**: For hosting the hackathon and providing the problem statement.  
 - **Ollama Team**: For enabling local AI model execution.  
-- **Streamlit Community**: For an amazing UI framework.
+- **Streamlit Community**: For an amazing UI framework.  
+- **ngrok**: For seamless exposure of local services to the cloud.
 
 ---
 
