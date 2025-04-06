@@ -8,7 +8,7 @@ from agents.source_identifier import SourceIdentifier
 from agents.mapping_generator import MappingGenerator
 from agents.certification_agent import CertificationAgent
 
-OLLAMA_URL = "https://ed63-117-239-226-201.ngrok-free.app/api/chat"
+OLLAMA_URL = "https://d9c7-103-139-190-234.ngrok-free.app/"
 
 conn = sqlite3.connect("customer360_memory.db")
 c = conn.cursor()
