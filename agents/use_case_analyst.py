@@ -13,4 +13,7 @@ class UseCaseAnalyst:
             ]
         }
         response = requests.post(self.ollama_url, json=payload)
-        return response.json()["message"]["content"]
+        try:
+            return response.json()["message"]["content"]
+        except (requests.JSONDecodeError, KeyError):
+            return response.text  # Fallback to raw text

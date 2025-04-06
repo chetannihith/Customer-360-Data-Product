@@ -8,17 +8,14 @@ from agents.source_identifier import SourceIdentifier
 from agents.mapping_generator import MappingGenerator
 from agents.certification_agent import CertificationAgent
 
-# Replace with your actual ngrok URL
-OLLAMA_URL = "https://6cf5-117-239-226-201.ngrok-free.app/"  # Update this each time ngrok restarts
+OLLAMA_URL = "https://ed63-117-239-226-201.ngrok-free.app/api/chat"
 
-# SQLite setup
 conn = sqlite3.connect("customer360_memory.db")
 c = conn.cursor()
 c.execute('''CREATE TABLE IF NOT EXISTS use_cases
              (use_case TEXT, data_product_structure TEXT, mapping TEXT)''')
 conn.commit()
 
-# Initialize agents
 use_case_analyst = UseCaseAnalyst(OLLAMA_URL)
 data_product_designer = DataProductDesigner(OLLAMA_URL)
 source_identifier = SourceIdentifier(OLLAMA_URL)
@@ -71,6 +68,16 @@ def main():
         certification_details = certification_agent.certify(data_product_structure)
         st.markdown("### Certification")
         st.write(certification_details)
+        # Debug raw response
+        st.markdown("### Debug: Raw Certification Response")
+        response = requests.post(OLLAMA_URL, json={
+            "model": "phi3:mini",
+            "messages": [
+                {"role": "system", "content": "Certify this"},
+                {"role": "user", "content": data_product_structure}
+            ]
+        })
+        st.write(response.text)
         progress.progress(100)
 
 if __name__ == "__main__":

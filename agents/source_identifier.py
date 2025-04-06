@@ -14,9 +14,9 @@ class SourceIdentifier:
             ]
         }
         response = requests.post(self.ollama_url, json=payload)
-        yaml_output = response.json()["message"]["content"]
         try:
+            yaml_output = response.json()["message"]["content"]
             parsed = yaml.safe_load(yaml_output)
             return yaml.dump(parsed, default_flow_style=False)
-        except yaml.YAMLError:
-            return yaml_output  # Fallback to raw output
+        except (requests.JSONDecodeError, KeyError, yaml.YAMLError):
+            return response.text  # Fallback to raw text
