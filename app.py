@@ -9,7 +9,7 @@ from agents.mapping_generator import MappingGenerator
 from agents.certification_agent import CertificationAgent
 
 # ngrok URL for cloud run compatibility
-OLLAMA_URL = "https://d9c7-103-139-190-234.ngrok-free.app/"
+OLLAMA_URL = "https://d9c7-103-139-190-234.ngrok-free.app/api/chat"
 
 # SQLite setup (unchanged from original)
 conn = sqlite3.connect("customer360_memory.db")
