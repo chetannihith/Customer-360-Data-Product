@@ -1,21 +1,24 @@
 import streamlit as st
-import requests
 import sqlite3
 import yaml
+import ollama  # Original local execution used the ollama client
 from agents.use_case_analyst import UseCaseAnalyst
 from agents.data_product_designer import DataProductDesigner
 from agents.source_identifier import SourceIdentifier
 from agents.mapping_generator import MappingGenerator
 from agents.certification_agent import CertificationAgent
 
+# ngrok URL for cloud run compatibility
 OLLAMA_URL = "https://d9c7-103-139-190-234.ngrok-free.app/"
 
+# SQLite setup (unchanged from original)
 conn = sqlite3.connect("customer360_memory.db")
 c = conn.cursor()
 c.execute('''CREATE TABLE IF NOT EXISTS use_cases
              (use_case TEXT, data_product_structure TEXT, mapping TEXT)''')
 conn.commit()
 
+# Initialize agents with the ngrok URL
 use_case_analyst = UseCaseAnalyst(OLLAMA_URL)
 data_product_designer = DataProductDesigner(OLLAMA_URL)
 source_identifier = SourceIdentifier(OLLAMA_URL)
@@ -42,7 +45,7 @@ def main():
             st.success("Found in memory!")
             data_product_structure, mapping = past_structure, past_mapping
         else:
-            st.info("Designing anew...")
+            st.write("Designing anew...")
             requirements = use_case_analyst.analyze(use_case)
             st.markdown("### Requirements")
             st.write(requirements)
@@ -68,16 +71,6 @@ def main():
         certification_details = certification_agent.certify(data_product_structure)
         st.markdown("### Certification")
         st.write(certification_details)
-        # Debug raw response
-        st.markdown("### Debug: Raw Certification Response")
-        response = requests.post(OLLAMA_URL, json={
-            "model": "phi3:mini",
-            "messages": [
-                {"role": "system", "content": "Certify this"},
-                {"role": "user", "content": data_product_structure}
-            ]
-        })
-        st.write(response.text)
         progress.progress(100)
 
 if __name__ == "__main__":
