@@ -1,6 +1,6 @@
 # Customer 360 Data Product Designer
 
-![Accenture Hackathon Banner]([https://via.placeholder.com/800x200.png?text=Accenture+Hack+the+Future](https://media.geeksforgeeks.org/img-practice/banner/hackathon-v2-1741259267-png.jpg))  
+![Accenture Hackathon Banner](hackathon-v2-1741259267-png.jpg)  
 *Submission for Accenture's "Hack the Future: A Gen AI Sprint Powered by Data"*
 
 ---
