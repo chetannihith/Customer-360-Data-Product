@@ -12,8 +12,16 @@ class CertificationAgent:
                 {"role": "user", "content": f"Define ingress, egress, and certification details for: {data_product_structure}"}
             ]
         }
-        response = requests.post(self.ollama_url, json=payload)
-        try:
-            return response.json()["message"]["content"]
-        except (requests.JSONDecodeError, KeyError):
-            return response.text  # Fallback to raw text
+        response = requests.post(self.ollama_url, json=payload, stream=True)
+        full_content = ""
+        for chunk in response.iter_content(chunk_size=1024, decode_unicode=True):
+            if chunk:
+                try:
+                    chunk_str = chunk.decode('utf-8')
+                    if '"content":"' in chunk_str:
+                        start = chunk_str.index('"content":"') + 11
+                        end = chunk_str.index('"', start)
+                        full_content += chunk_str[start:end]
+                except (ValueError, UnicodeDecodeError):
+                    continue
+        return full_content if full_content else response.text

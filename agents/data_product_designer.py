@@ -13,10 +13,22 @@ class DataProductDesigner:
                 {"role": "user", "content": f"Design a data product structure based on: {requirements}"}
             ]
         }
-        response = requests.post(self.ollama_url, json=payload)
-        try:
-            yaml_output = response.json()["message"]["content"]
-            parsed = yaml.safe_load(yaml_output)
-            return yaml.dump(parsed, default_flow_style=False)
-        except (requests.JSONDecodeError, KeyError, yaml.YAMLError):
-            return response.text  # Fallback to raw text
+        response = requests.post(self.ollama_url, json=payload, stream=True)
+        full_content = ""
+        for chunk in response.iter_content(chunk_size=1024, decode_unicode=True):
+            if chunk:
+                try:
+                    chunk_str = chunk.decode('utf-8')
+                    if '"content":"' in chunk_str:
+                        start = chunk_str.index('"content":"') + 11
+                        end = chunk_str.index('"', start)
+                        full_content += chunk_str[start:end]
+                except (ValueError, UnicodeDecodeError):
+                    continue
+        if full_content:
+            try:
+                parsed = yaml.safe_load(full_content)
+                return yaml.dump(parsed, default_flow_style=False)
+            except yaml.YAMLError:
+                return full_content
+        return response.text
