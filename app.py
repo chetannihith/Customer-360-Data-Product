@@ -68,10 +68,10 @@ def main():
 
             save_to_memory(use_case, data_product_structure, mapping)
 
-        certification_details = certification_agent.certify(data_product_structure)
-        st.markdown("### Certification")
-        st.write(certification_details)
-        progress.progress(100)
+            certification_details = certification_agent.certify(data_product_structure)
+            st.markdown("### Certification")
+            st.write(certification_details)
+            progress.progress(100)
 
 if __name__ == "__main__":
     main()
