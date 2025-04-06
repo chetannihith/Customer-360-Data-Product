@@ -46,22 +46,22 @@ def main():
             data_product_structure, mapping = past_structure, past_mapping
         else:
             st.write("Designing anew...")
-            requirements = use_case_analyst.analyze(use_case)
+            requirements = use_case_analyst.analyze(use_case).replace('\\n', '\n')
             st.markdown("### Requirements")
             st.write(requirements)
             progress.progress(20)
 
-            data_product_structure = data_product_designer.design(requirements)
+            data_product_structure = data_product_designer.design(requirements).replace('\\n', '\n')
             st.markdown("### Data Product Structure")
             st.code(data_product_structure, language="yaml")
             progress.progress(40)
 
-            source_info = source_identifier.identify(data_product_structure)
+            source_info = source_identifier.identify(data_product_structure).replace('\\n', '\n')
             st.markdown("### Source Systems")
             st.code(source_info, language="yaml")
             progress.progress(60)
 
-            mapping = mapping_generator.generate(source_info, data_product_structure)
+            mapping = mapping_generator.generate(source_info, data_product_structure).replace('\\n', '\n')
             st.markdown("### Attribute Mapping")
             st.code(mapping, language="yaml")
             progress.progress(80)
