@@ -6,7 +6,6 @@ from agents.data_product_designer import DataProductDesigner
 from agents.source_identifier import SourceIdentifier
 from agents.mapping_generator import MappingGenerator
 from agents.certification_agent import CertificationAgent
-from agents.visualization_agent import VisualizationAgent
 
 # Initialize model
 MODEL_NAME = "phi3:mini"
@@ -24,7 +23,6 @@ data_product_designer = DataProductDesigner(MODEL_NAME)
 source_identifier = SourceIdentifier(MODEL_NAME)
 mapping_generator = MappingGenerator(MODEL_NAME)
 certification_agent = CertificationAgent(MODEL_NAME)
-visualization_agent = VisualizationAgent()
 
 def check_memory(use_case):
     """Check if a similar use case exists in memory."""
@@ -96,10 +94,6 @@ def main():
             certification_details = certification_agent.certify(data_product_structure)
         st.write(certification_details)
         progress.progress(100)
-
-        # Visualization
-        st.markdown("### Process Flowchart")
-        visualization_agent.render_flowchart()
 
         # Export option
         if st.button("Export Results as YAML"):
