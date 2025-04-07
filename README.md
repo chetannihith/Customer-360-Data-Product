@@ -207,3 +207,10 @@ This project was developed for **Accenture's "Hack the Future: A Gen AI Sprint P
 ---
 
 *Thank you for exploring our solution! We hope it transforms how retail banks design Customer 360 data products.*
+
+---
+
+**Team Members**
+
+- @chetannihith
+- @shaleenchordia
